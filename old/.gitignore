@@ -1,0 +1,7 @@
+.venv/
+.eggs/
+dist/
+build/
+Chia_Keys.egg-info/
+*.key
+*~*
