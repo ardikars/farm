@@ -1,0 +1,20 @@
+version: "3.6"
+services:
+  chia:
+    container_name: chia134
+    image: chia134:latest
+    ports:
+      - 8444:8444
+      - 8447:8447
+      - 8555:8555
+    volumes:
+      - /root/.chia/:/root/.chia/
+      - /root/.chia_keys/:/root/.chia_keys/
+    environment:
+      # Disable key generation on start
+      - service="farmer-only"
+      - keys=
+      - TZ="Asia/Jakarta"
+      - upnp=false
+      - log_leve=INFO
+      - CHIA_ROOT=/root/.chia/mainnet134
