@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "Chia Keys",
-    version = "1.0.0",
+    version = "1.1.0",
     python_requires=">=3.7",
     author = "Ardika Rommy Sanjaya",
     author_email="contact@ardikars.com",
@@ -15,7 +15,7 @@ setup(
     setup_requires=["setuptools_scm"],
     include_package_data=True,
     install_requires=[
-    	"chia-blockchain==1.4.0",
+    	"chia-blockchain==1.5.0",
     ],
     package_data={
         "": ["*.clvm", "*.clvm.hex", "*.clib", "*.clsp", "*.clsp.hex", "*.txt"],

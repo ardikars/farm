@@ -168,6 +168,7 @@ def cli_show(passphrase: str, input: LazyFile, index: int, derive: int, length: 
         print(f"Private key     : {sk}")
         print(f"Public key      : {sk.get_g1()}")
         print(f"Fingerprint     : {sk.get_g1().get_fingerprint()}")
+        print(f"Addresses       : ")
         for i in range(derive, derive + length):
             wallet_address: str = _derive(sk, i)
             print(f"[{index}/{i}]: {wallet_address}")

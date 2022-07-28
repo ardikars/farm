@@ -1,1 +1,2 @@
 chia-blockchain==1.5.0
+setuptools==63.2.0
