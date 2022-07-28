@@ -123,7 +123,8 @@ def cli():
 @click.option("--output", type = click.Path(exists = False), default = "master.key", help = "Output file.")
 def cli_generate(passphrase: str, output: str = None):
     if output is not None:
-        passphrase_hash = normalize_salt("", passphrase)
+        passphrase_normalized = normalize_salt("", passphrase)
+        passphrase_hash = hashlib.sha256(passphrase_normalized).digest()
         master_token: bytes = token_bytes()
         master_mnemonic: str = bytes_to_mnemonic(master_token)
         master_entropy: bytes = bytes_from_mnemonic(master_mnemonic)
@@ -138,7 +139,7 @@ def cli_generate(passphrase: str, output: str = None):
             try:
                 with open(output, "w") as file:
                     file.write(master_entropy.hex())
-                    print(f"Passphrase  : {passphrase_hash.hex()}")
+                    print(f"Passphrase  : {passphrase_normalized.hex()} -> sha256({passphrase_hash.hex()})")
                     print(f"Master key has been generated ({master_fingerprint}): {path.resolve()}")
             except FileNotFoundError as err:
                 print(err)
@@ -150,20 +151,25 @@ def cli_generate(passphrase: str, output: str = None):
 @click.argument("input", type = click.File("r"))
 @click.option("--index", default = 0, help = "Key index.")
 @click.option("--derive", default = 0, help = "Derive key from spesific index.")
-def cli_show(passphrase: str, input: LazyFile, index: int, derive: int):
-    passphrase_hash = normalize_salt("", passphrase)
-    master_entropy: bytes = bytes.fromhex(input.readline().strip())
-    master_mnemonic: str = bytes_to_mnemonic(master_entropy)
-    master_seed: bytes = mnemonic_to_seed(master_mnemonic, passphrase)
-    entropy, sk = show(master_seed, index, passphrase)
-    wallet_address: str = _derive(sk, derive)
-    print(f"Index           : {index}")
-    print(f"Passphrase      : {passphrase_hash.hex()}")
-    print(f"Mnemonic        : {bytes_to_mnemonic(entropy)}")
-    print(f"Private key     : {sk}")
-    print(f"Public key      : {sk.get_g1()}")
-    print(f"Fingerprint     : {sk.get_g1().get_fingerprint()}")
-    print(f"Wallet Address  : [{derive}] {wallet_address}")
+@click.option("--passphrase-sha256", default = None, help = "SHA256 of normalized passphrase.")
+def cli_show(passphrase: str, input: LazyFile, index: int, derive: int, passphrase_sha256: str):
+    passphrase_normalized = normalize_salt("", passphrase)
+    passphrase_hash = hashlib.sha256(passphrase_normalized).digest()
+    if passphrase_sha256 is not None and passphrase_hash != bytes.fromhex(passphrase_sha256):
+        print("Invalid passphrase.")
+    else:
+        master_entropy: bytes = bytes.fromhex(input.readline().strip())
+        master_mnemonic: str = bytes_to_mnemonic(master_entropy)
+        master_seed: bytes = mnemonic_to_seed(master_mnemonic, passphrase)
+        entropy, sk = show(master_seed, index, passphrase)
+        wallet_address: str = _derive(sk, derive)
+        print(f"Index           : {index}")
+        print(f"Passphrase      : {passphrase_normalized.hex()} -> sha256({passphrase_hash.hex()})")
+        print(f"Mnemonic        : {bytes_to_mnemonic(entropy)}")
+        print(f"Private key     : {sk}")
+        print(f"Public key      : {sk.get_g1()}")
+        print(f"Fingerprint     : {sk.get_g1().get_fingerprint()}")
+        print(f"Wallet Address  : [{derive}] {wallet_address}")
 
 def main():
     cli()

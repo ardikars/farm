@@ -1,1 +1,1 @@
-chia-blockchain==1.4.0
+chia-blockchain==1.5.0
