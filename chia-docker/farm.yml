@@ -1,0 +1,25 @@
+version: "3.6"
+services:
+  chia-farm:
+    container_name: chia_farm
+    restart: unless-stopped
+    image: ghcr.io/chia-network/chia:latest
+    ports:
+      - 8444:8444
+      - 8447:8447
+    environment:
+      service: farmer
+      keys: /root/.mnemonic
+      TZ: "Asia/Jakarta"
+      upnp: "true"
+      log_level: INFO
+      log_to_file: "true"
+      CHIA_ROOT: /root/.chia/mainnet/
+      healthcheck: "true"
+      plots_dir: "/root/.chia/plots/01/:/root/.chia/plots/02/:/root/.chia/plots/03/:/root/.chia/plots/04/"
+    volumes:
+      - /root/.mnemonic:/root/.mnemonic
+      - /root/.chia/mainnet/config/ssl/ca/:/root/.chia/mainnet/config/ssl/ca/
+      - /root/.chia/mainnet/db/:/root/.chia/mainnet/db/
+      - /root/.chia/mainnet/wallet/db/:/root/.chia/mainnet/wallet/db/
+      - /root/.chia/plots/:/root/.chia/plots/
