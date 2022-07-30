@@ -9,11 +9,11 @@ services:
     ports:
       - 8444:8444
     environment:
-      service: farmer-no-wallet
+      service: farmer
       keys: /root/.mnemonic
       TZ: "Asia/Jakarta"
       upnp: "true"
-      log_level: INFO
+      log_level: WARN
       log_to_file: "true"
       CHIA_ROOT: /root/.chia/mainnet/
       healthcheck: "true"
