@@ -30,7 +30,7 @@ services:
     restart: unless-stopped
     image: ghcr.io/chia-network/chia:latest
     networks:
-      - host
+      - host_network
     environment:
       service: wallet
       keys:
@@ -46,4 +46,5 @@ services:
 networks:
   chia_network:
     name: chia-network
-
+  host_network:
+    name: host
