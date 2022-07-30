@@ -29,8 +29,7 @@ services:
     container_name: chia-wallet
     restart: unless-stopped
     image: ghcr.io/chia-network/chia:latest
-    networks:
-      - host_network
+    network_mode: host
     environment:
       service: wallet
       keys:
@@ -46,5 +45,5 @@ services:
 networks:
   chia_network:
     name: chia-network
-  host_network:
-    name: host
+    driver: bridge
+
