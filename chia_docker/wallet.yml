@@ -4,6 +4,8 @@ services:
     container_name: chia_wallet
     restart: unless-stopped
     image: ghcr.io/chia-network/chia:latest
+    networks:
+      - chia_network
     environment:
       service: wallet
       keys:

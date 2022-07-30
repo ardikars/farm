@@ -4,9 +4,10 @@ services:
     container_name: chia_farm
     restart: unless-stopped
     image: ghcr.io/chia-network/chia:latest
+    networks:
+      - chia_network
     ports:
       - 8444:8444
-      - 8447:8447
     environment:
       service: farmer
       keys: /root/.mnemonic
