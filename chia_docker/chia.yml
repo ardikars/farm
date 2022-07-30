@@ -43,7 +43,7 @@ services:
     volumes:
       - /root/.chia/lightnet/wallet/db/:/root/.chia/mainnet/wallet/db/
 
-netowrks:
+networks:
   chia_networks:
     name: chia-network
 
