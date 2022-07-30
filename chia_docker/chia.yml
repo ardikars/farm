@@ -44,6 +44,6 @@ services:
       - /root/.chia/lightnet/wallet/db/:/root/.chia/mainnet/wallet/db/
 
 networks:
-  chia_networks:
+  chia_network:
     name: chia-network
 
