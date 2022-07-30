@@ -1,7 +1,7 @@
 version: "3.6"
 services:
-  chia-farm:
-    container_name: chia_farm
+  chia_farm:
+    container_name: chia-farm
     restart: unless-stopped
     image: ghcr.io/chia-network/chia:latest
     networks:
@@ -24,3 +24,26 @@ services:
       - /root/.chia/mainnet/db/:/root/.chia/mainnet/db/
       - /root/.chia/mainnet/wallet/db/:/root/.chia/mainnet/wallet/db/
       - /root/.chia/plots/:/root/.chia/plots/
+
+  chia_wallet:
+    container_name: chia-wallet
+    restart: unless-stopped
+    image: ghcr.io/chia-network/chia:latest
+    networks:
+      - host
+    environment:
+      service: wallet
+      keys:
+      TZ: "Asia/Jakarta"
+      upnp: "false"
+      log_level: INFO
+      log_to_file: "true"
+      CHIA_ROOT: /root/.chia/mainnet/
+      healthcheck: "true"
+    volumes:
+      - /root/.chia/lightnet/wallet/db/:/root/.chia/mainnet/wallet/db/
+
+netowrks:
+  chia_networks:
+    name: chia-network
+
