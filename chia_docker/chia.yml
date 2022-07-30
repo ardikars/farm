@@ -9,7 +9,7 @@ services:
     ports:
       - 8444:8444
     environment:
-      service: farmer
+      service: farmer-no-wallet
       keys: /root/.mnemonic
       TZ: "Asia/Jakarta"
       upnp: "true"
