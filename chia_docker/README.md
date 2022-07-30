@@ -6,7 +6,7 @@ $ docker-compose -f chia.yml up -d
 $ docker container exec -it chia-farmer /bin/bash
 ```
 
-Edit pool config.
+Edit pool config in `$CHIA_ROOT/config/config.yaml`.
 
 ```
 pool:

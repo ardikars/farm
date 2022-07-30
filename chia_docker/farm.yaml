@@ -45,23 +45,6 @@ services:
       - /root/.chia/mainnet/config/ssl/ca/:/root/.chia/mainnet/config/ssl/ca/
       - /root/.chia/plots/:/root/.chia/plots/
 
-  chia_wallet:
-    container_name: chia-wallet
-    restart: unless-stopped
-    image: ghcr.io/chia-network/chia:1.5.0
-    network_mode: host
-    environment:
-      service: wallet
-      keys:
-      TZ: "Asia/Jakarta"
-      upnp: "false"
-      log_level: INFO
-      log_to_file: "true"
-      CHIA_ROOT: /root/.chia/mainnet/
-      healthcheck: "true"
-    volumes:
-      - /root/.chia/lightnet/wallet/db/:/root/.chia/mainnet/wallet/db/
-
 networks:
   chia_network:
     name: chia-network
