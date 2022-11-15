@@ -1,25 +1,26 @@
 #!/usr/bin/env python
 
-import os
-import pkg_resources
 import hashlib
+import os
 import unicodedata
-import click
+from pathlib import Path
+from typing import List
 
+import click
+import pkg_resources
+from bitstring import BitArray
+from blspy import AugSchemeMPL, PrivateKey
 from click.utils import LazyFile
 
-from bitstring import BitArray
-from pathlib import Path
+from chia_keys.consensus.coinbase import create_puzzlehash_for_pk
+from chia_keys.util.bech32m import encode_puzzle_hash
+from chia_keys.util.ints import uint32
+from chia_keys.wallet.derive_keys import master_sk_to_wallet_sk
 
-from blspy import AugSchemeMPL, PrivateKey
-
-from chia.consensus.coinbase import create_puzzlehash_for_pk
-from chia.wallet.derive_keys import master_sk_to_wallet_sk
-from chia.util.bech32m import encode_puzzle_hash
-from chia.util.ints import uint32
 
 def std_hash(b: bytes) -> bytes:
     return hashlib.sha256(b).digest()
+
 
 def bytes_to_mnemonic(mnemonic_bytes: bytes) -> str:
     if len(mnemonic_bytes) not in [16, 20, 24, 28, 32]:
@@ -44,6 +45,7 @@ def bytes_to_mnemonic(mnemonic_bytes: bytes) -> str:
         mnemonics.append(m_word)
 
     return " ".join(mnemonics)
+
 
 def bytes_from_mnemonic(mnemonic_str: str) -> bytes:
     mnemonic: List[str] = mnemonic_str.split(" ")
@@ -75,15 +77,19 @@ def bytes_from_mnemonic(mnemonic_str: str) -> bytes:
 
     return entropy_bytes
 
+
 def bip39_word_list() -> str:
-    return pkg_resources.resource_string(__name__, "english.txt").decode()
+    return pkg_resources.resource_string(__name__, "util/english.txt").decode()
+
 
 def token_bytes():
     return os.urandom(32)
 
+
 def normalize_salt(prefix: str, passphrase: str) -> bytes:
     salt_str: str = prefix + passphrase
     return unicodedata.normalize("NFKD", salt_str).encode("utf-8")
+
 
 def mnemonic_to_seed(mnemonic: str, passphrase: str) -> bytes:
     """
@@ -95,6 +101,7 @@ def mnemonic_to_seed(mnemonic: str, passphrase: str) -> bytes:
 
     assert len(seed) == 64
     return seed
+
 
 def show(master_seed: bytes, index: int, passphrase: str):
     new_seed: bytes = std_hash(master_seed)
@@ -109,18 +116,21 @@ def show(master_seed: bytes, index: int, passphrase: str):
             new_seed = std_hash(mnemonic_to_seed(new_mnemonic, passphrase))
     raise ValueError(f"Index out of bounds {i}")
 
+
 def _derive(sk: PrivateKey, index: int):
     wallet_sk: PrivateKey = master_sk_to_wallet_sk(sk, uint32(index))
     wallet_address: str = encode_puzzle_hash(create_puzzlehash_for_pk(wallet_sk.get_g1()), "xch")
     return wallet_address
 
+
 @click.group()
 def cli():
     pass
 
+
 @cli.command(name="generate")
-@click.option('--passphrase', prompt = "Your passphrase", default = "", hide_input = True, help = "Secret passphrase.")
-@click.option("--output", type = click.Path(exists = False), default = "master.key", help = "Output file.")
+@click.option('--passphrase', prompt="Your passphrase", default="", hide_input=True, help="Secret passphrase.")
+@click.option("--output", type=click.Path(exists=False), default="master.key", help="Output file.")
 def cli_generate(passphrase: str, output: str = None):
     if output is not None:
         passphrase_normalized = normalize_salt("", passphrase)
@@ -146,13 +156,14 @@ def cli_generate(passphrase: str, output: str = None):
     else:
         print(f"Please provide output destination.")
 
-@cli.command(name = "show")
-@click.option('--passphrase', prompt = "Your passphrase", default = "", hide_input = True, help = "Secret passphrase.")
-@click.argument("input", type = click.File("r"))
-@click.option("--index", default = 0, help = "Key index.")
-@click.option("--derive", default = 0, help = "Derive key from spesific index.")
-@click.option("--length", default = 1, help = "Length.")
-@click.option("--passphrase-sha256", default = None, help = "SHA256 of normalized passphrase.")
+
+@cli.command(name="show")
+@click.option('--passphrase', prompt="Your passphrase", default="", hide_input=True, help="Secret passphrase.")
+@click.argument("input", type=click.File("r"))
+@click.option("--index", default=0, help="Key index.")
+@click.option("--derive", default=0, help="Derive key from spesific index.")
+@click.option("--length", default=1, help="Length.")
+@click.option("--passphrase-sha256", default=None, help="SHA256 of normalized passphrase.")
 def cli_show(passphrase: str, input: LazyFile, index: int, derive: int, length: int, passphrase_sha256: str):
     passphrase_normalized = normalize_salt("", passphrase)
     passphrase_hash = hashlib.sha256(passphrase_normalized).digest()
@@ -173,8 +184,10 @@ def cli_show(passphrase: str, input: LazyFile, index: int, derive: int, length: 
             wallet_address: str = _derive(sk, i)
             print(f"[{index}/{i}]: {wallet_address}")
 
+
 def main():
     cli()
+
 
 if __name__ == "__main__":
     main()

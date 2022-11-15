@@ -1,7 +1,9 @@
 .venv/
 .eggs/
+.idea/
 dist/
 build/
-Chia_Keys.egg-info/
+chia_Keys.egg-info/
 *.key
+*.pyc
 *~*
