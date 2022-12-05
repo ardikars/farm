@@ -9,7 +9,8 @@ services:
     ports:
       - 8444:8444
     environment:
-      service: farmer-only
+      # Full Node, Farmer, Harvester, and Wallet
+      service: farmer
       keys: /root/.mnemonic
       TZ: "Asia/Jakarta"
       upnp: "true"
@@ -17,8 +18,10 @@ services:
       log_to_file: "true"
       CHIA_ROOT: /root/.chia/mainnet/
       healthcheck: "true"
+      plot_dir: "/root/.plots/"
     volumes:
       - /root/.mnemonic:/root/.mnemonic
+      - /root/.plots/:/root/.plots/
       - /root/.chia/mainnet/config/ssl/ca/:/root/.chia/mainnet/config/ssl/ca/
       - /root/.chia/mainnet/db/:/root/.chia/mainnet/db/
       - /root/.chia/mainnet/wallet/db/:/root/.chia/mainnet/wallet/db/
@@ -30,6 +33,7 @@ services:
     networks:
       - chia_network
     environment:
+      # Harvester Only
       service: harvester
       keys:
       TZ: "Asia/Jakarta"
