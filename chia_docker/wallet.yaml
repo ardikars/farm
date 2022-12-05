@@ -3,7 +3,7 @@ services:
   chia_wallet:
     container_name: chia-wallet
     restart: unless-stopped
-    image: ghcr.io/chia-network/chia:1.5.0
+    image: ghcr.io/chia-network/chia:1.6.1
     network_mode: host
     environment:
       service: wallet
@@ -14,6 +14,8 @@ services:
       log_to_file: "true"
       CHIA_ROOT: /root/.chia/mainnet/
       healthcheck: "true"
+      fullnode_address: chia_farmer
+      fullnode_port: 8444
     volumes:
       - /root/.chia/lightnet/wallet/db/:/root/.chia/mainnet/wallet/db/
 

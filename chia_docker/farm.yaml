@@ -3,13 +3,13 @@ services:
   chia_farmer:
     container_name: chia-farmer
     restart: unless-stopped
-    image: ghcr.io/chia-network/chia:1.5.0
+    image: ghcr.io/chia-network/chia:1.6.1
     networks:
       - chia_network
     ports:
       - 8444:8444
     environment:
-      service: farmer
+      service: farmer-only
       keys: /root/.mnemonic
       TZ: "Asia/Jakarta"
       upnp: "true"
@@ -26,7 +26,7 @@ services:
   chia_harvester:
     container_name: chia-harvester
     restart: unless-stopped
-    image: ghcr.io/chia-network/chia:1.5.0
+    image: ghcr.io/chia-network/chia:1.6.1
     networks:
       - chia_network
     environment:
@@ -37,7 +37,7 @@ services:
       log_to_file: "true"
       CHIA_ROOT: /root/.chia/mainnet/
       healthcheck: "true"
-      farmer_address: chia-farmer
+      farmer_address: chia_farmer
       farmer_port: 8447
       ca: /root/.chia/mainnet/config/ssl/ca/
       plots_dir: "/root/.chia/plots/01/:/root/.chia/plots/02/:/root/.chia/plots/03/:/root/.chia/plots/04/"
