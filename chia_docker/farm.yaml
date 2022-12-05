@@ -18,7 +18,7 @@ services:
       log_to_file: "true"
       CHIA_ROOT: /root/.chia/mainnet/
       healthcheck: "true"
-      plot_dir: "/root/.plots/"
+      plots_dir: "/root/.plots/"
     volumes:
       - /root/.mnemonic:/root/.mnemonic
       - /root/.plots/:/root/.plots/
