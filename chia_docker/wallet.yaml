@@ -4,7 +4,6 @@ services:
     container_name: chia-wallet
     restart: unless-stopped
     image: ghcr.io/chia-network/chia:1.6.1
-    network_mode: host
     environment:
       service: wallet
       keys:
@@ -18,4 +17,9 @@ services:
       fullnode_port: 8444
     volumes:
       - /root/.chia/lightnet/wallet/db/:/root/.chia/mainnet/wallet/db/
+
+networks:
+  chia_network:
+    name: chia-network
+    driver: bridge
 
